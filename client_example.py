@@ -1,48 +1,101 @@
+import random
+from pprint import pprint
+from time import sleep
+
 import requests
 
 SERVER = 'http://127.0.0.1:5000'
-TMP_SESSION = '111'
+# PROXY = {'http': 'http://127.0.0.1:8080'}
+PROXY = None
 
 
-def print_board(board):
+def check_and_parse(req):
+    if req.status_code == 200:
+        return req.json()
+    else:
+        print(req.status_code)
+        pprint(dict(req.headers))
+        if len(req.content) < 100:
+            pprint(req.content)
+        return None
+
+
+def print_game(game):
     # {
+    #     'game_id': 1,
     #     'board': 'xo       ',
     #     'you': 'x',
     #     'turn': 'x',
+    #     'state': 'game'
     # }
     for y in range(3):
-        line = board['board'][y*3:y*3+3]
+        line = game['board'][y * 3:y * 3 + 3]
         line = '|'.join(line)
         print(line)
         print('------')
 
 
-
-
-def new_game(session: str):
-    r = requests.get(f'{SERVER}/new_game', params={'session': session})
-    if r.status_code == 200:
-        return r.json()
-
-
-def get_board(session: str, game_id: int):
-    r = requests.get(f'{SERVER}/get_board', params={'session': session, 'game_id': game_id})
-    if r.status_code == 200:
-        return r.json()
-
-
-def new_and_get():
-    s = get_session({})
-    g = new_game(s)
-    gid = g['game_id']
-    b = get_board(s, gid)
-    board = b['']
-    print(board)
-
-
 def get_session(auth: dict):
-    return TMP_SESSION
+    req = requests.post(SERVER + '/session', json=auth, proxies=PROXY)
+    j = check_and_parse(req)
+    if j:
+        return j['session']
+    else:
+        return 'error with session'
+
+
+def new_game(session):
+    req = requests.post(SERVER + '/new_game', headers={'X-Session': session}, proxies=PROXY)
+    j = check_and_parse(req)
+    if j:
+        return j['game_id']
+    else:
+        return 'error with new game'
+
+
+def still_game(session, game_id):
+    req = requests.get(SERVER + '/game?game_id=' + str(game_id), headers={'X-Session': session}, proxies=PROXY)
+    j = check_and_parse(req)
+    if j and j['state'] == 'game':
+        return True
+    else:
+        print(j)
+        return False
+
+
+def wait_opponent(session, game_id):
+    while True:
+        req = requests.get(SERVER + '/game?game_id=' + str(game_id), headers={'X-Session': session}, proxies=PROXY)
+        j = check_and_parse(req)
+        if not j:
+            return
+        if j['state'] != 'wait':
+            break
+        sleep(1)
 
 
 if __name__ == '__main__':
-    get_session({1: 2})
+    s = get_session({'login': 'user1', 'password': '123'})
+    print(f'{s=}')
+    gid = new_game(s)
+    print(f'{gid=}')
+    wait_opponent(s, gid)
+    print('game begin')
+    while last := still_game(s, gid):
+        r = requests.get(SERVER + '/game?game_id=' + str(gid), headers={'X-Session': s}, proxies=PROXY)
+        j = check_and_parse(r)
+        if j['turn'] == j['you']:
+            while True:
+                move = random.randint(0, 8)
+                print('i\'ll take', move)
+                rr = requests.put(SERVER + '/make_move', json={'game_id': gid, 'move': move}, headers={'X-Session': s},
+                                  proxies=PROXY)
+                jj = check_and_parse(r)
+                if jj:
+                    print_game(jj)
+                    break
+                sleep(1)
+        else:
+            print('wait his move')
+        sleep(1)
+    print('end', 'last:', last)
