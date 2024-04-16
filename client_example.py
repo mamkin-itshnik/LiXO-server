@@ -1,4 +1,5 @@
 import random
+import sys
 from pprint import pprint
 from time import sleep
 
@@ -81,7 +82,11 @@ if __name__ == '__main__':
     print(f'{gid=}')
     wait_opponent(s, gid)
     print('game begin')
+    move_counter = 0
     while last := still_game(s, gid):
+        if move_counter > 5:
+            print('too much moves')
+            sys.exit(1)
         r = requests.get(SERVER + '/game?game_id=' + str(gid), headers={'X-Session': s}, proxies=PROXY)
         j = check_and_parse(r)
         if j['turn'] == j['you']:
@@ -95,7 +100,7 @@ if __name__ == '__main__':
                     print_game(jj)
                     break
                 sleep(1)
+            move_counter += 1
         else:
             print('wait his move')
         sleep(1)
-    print('end', 'last:', last)
