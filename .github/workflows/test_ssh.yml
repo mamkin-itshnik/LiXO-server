@@ -16,5 +16,5 @@ jobs:
             port: ${{ secrets.PORT }}
             passphrase: ${{ secrets.PASSPHRASE }}            
             script: |
-              whoami
-              ls -al
+              cd ~/LiXO-server
+              git pull
