@@ -1,10 +1,10 @@
-name: "test ssh"
+name: "ci/cd pipeline"
 on:
   push:
     branches: ["ci-cd"]
 
 jobs:
-  ssh:
+  update-repo:
       runs-on: ubuntu-latest
       steps:
         - name: multiple command
@@ -14,7 +14,9 @@ jobs:
             username: ${{ secrets.USERNAME }}
             key: ${{ secrets.KEY }}
             port: ${{ secrets.PORT }}
-            passphrase: ${{ secrets.PASSPHRASE }}            
+            passphrase: ${{ secrets.PASSPHRASE }}
             script: |
               cd ~/LiXO-server
               git pull
+              docker build -t server . 
+              docker run -d -p 5000:5000 server

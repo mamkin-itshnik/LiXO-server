@@ -1,9 +1,9 @@
-name: Python package
+name: test
 
-on: [push]
- # push:
-   # branches:
-    #  - 'ci-cd'
+on:
+  push:
+    branches:
+      - 'nope'
 
 jobs:
   build:
