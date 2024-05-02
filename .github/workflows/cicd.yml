@@ -21,4 +21,5 @@ jobs:
               sudo docker build -t server .
               sudo docker stop server
               sudo docker run --name server --rm -d -p 5000:5000 server
+              sleep 10
               python client_example.py
