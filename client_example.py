@@ -4,7 +4,7 @@ from time import sleep
 
 import requests
 
-SERVER = 'http://127.0.0.1:4000'
+SERVER = 'http://127.0.0.1:5000'
 # PROXY = {'http': 'http://127.0.0.1:8080'}
 PROXY = None
 
