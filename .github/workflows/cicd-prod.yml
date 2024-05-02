@@ -17,6 +17,7 @@ jobs:
             passphrase: ${{ secrets.PASSPHRASE }}
             script: |
               cd ~/LiXO-server
+              git checkout main
               git pull
               sudo docker build -t server .
               sudo docker stop server

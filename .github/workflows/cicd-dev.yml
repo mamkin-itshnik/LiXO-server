@@ -17,6 +17,7 @@ jobs:
             passphrase: ${{ secrets.PASSPHRASE }}
             script: |
               cd ~/LiXO-server
+              git checkout ci-cd
               git pull
               sudo docker build -t dev .
               sudo docker run --name dev --rm -d -p 4000:5000 dev
