@@ -7,7 +7,7 @@ jobs:
   update-repo:
       runs-on: ubuntu-latest
       steps:
-        - name: multiple command
+        - name: run dev server
           uses: appleboy/ssh-action@v1.0.3
           with:
             host: ${{ secrets.HOST }}
@@ -18,8 +18,9 @@ jobs:
             script: |
               cd ~/LiXO-server
               git pull
-              sudo docker build -t server .
-              sudo docker stop server
-              sudo docker run --name server --rm -d -p 5000:5000 server
+              sudo docker build -t dev .
+              sudo docker run --name dev --rm -d -p 4000:5000 dev
               sleep 10
               python client_example.py
+              sleep 15
+              sudo docker stop dev

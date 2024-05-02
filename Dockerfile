@@ -7,6 +7,8 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 # |ВАЖНЫЙ МОМЕНТ| копируем содержимое папки, где находится Dockerfile, 
 # в рабочую директорию контейнера
+RUN adduser -D appuser
+USER appuser
 COPY . .
 # Переименовываем .env в .env (перенести в compose, наверное)
 #ENTRYPOINT ["mv", "/app/server/.env.example", "/app/server/.env"]
