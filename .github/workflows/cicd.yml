@@ -18,5 +18,6 @@ jobs:
             script: |
               cd ~/LiXO-server
               git pull
-              sudo docker build -t server . 
-              sudo docker run -d -p 5000:5000 server
+              sudo docker build -t server .
+              sudo docker stop server
+              sudo docker run --name server --rm -d -p 5000:5000 server
