@@ -2,10 +2,16 @@ import random
 import sys
 from pprint import pprint
 from time import sleep
-
+import sys
 import requests
+if len(sys.argv) < 3:
+    HOST = '127.0.0.1'
+    PORT = '5001'
+else:
+    HOST = sys.argv[1]
+    PORT = sys.argv[2]
 
-SERVER = 'http://127.0.0.1:5000'
+SERVER = 'http://'+HOST+':'+PORT
 # PROXY = {'http': 'http://127.0.0.1:8080'}
 PROXY = None
 

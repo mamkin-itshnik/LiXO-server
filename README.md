@@ -1,5 +1,6 @@
 # LiXO-server
-
+![LiXo](https://github.com/mamkin-itshnik/LiXO-server/actions/workflows/cicd-prod.yml/badge.svg)
+![LiXo](https://github.com/mamkin-itshnik/LiXO-server/actions/workflows/cicd-dev.yml/badge.svg?branch=feature/Dockerizing-Flask)
 ## API
 
 [Описание API](docs/api.md)
@@ -18,6 +19,8 @@
 
 ## Клиенты
 
-Для примера реализован client_example.py, который ведет себя как тупой бот.
+Для примера реализован client_example.py, который ведет себя как тупой бот. 
+При запуске client_example.py необходимо передать ему IP и порт сервера в виде 
+python client_example.py x.x.x.x xxxx
 
 https://github.com/mamkin-itshnik/lixo-android

@@ -1,10 +1,8 @@
-name: "ci/cd pipeline"
+name: "Deployment prod server"
 on:
-  push:
-    branches: ["main"]
-
+  workflow_dispatch:
 jobs:
-  update-repo:
+  run-server:
       runs-on: ubuntu-latest
       steps:
         - name: run prod server
@@ -17,10 +15,25 @@ jobs:
             passphrase: ${{ secrets.PASSPHRASE }}
             script: |
               cd ~/LiXO-server
+              git pull
               git checkout main
               git pull
-              sudo docker build -t server .
-              sudo docker stop server
-              sudo docker run --name server --rm -d -p 5000:5000 server
-              sleep 10
-              python client_example.py
+              sudo docker compose -f docker-compose-prod.yml up -d --build
+  test:
+    needs: run-server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            client_example.py
+          sparse-checkout-cone-mode: false
+      - name: setup-python
+        uses: actions/setup-python@v4
+        with:
+          # Semantic version range syntax or exact version of a Python version
+          python-version: '3.x'
+      - name: run test
+        run: |
+          pip install requests
+          python client_example.py ${{ secrets.HOST }} 57366
