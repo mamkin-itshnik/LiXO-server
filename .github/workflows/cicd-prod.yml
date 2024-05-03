@@ -1,0 +1,26 @@
+name: "ci/cd pipeline"
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  update-repo:
+      runs-on: ubuntu-latest
+      steps:
+        - name: run prod server
+          uses: appleboy/ssh-action@v1.0.3
+          with:
+            host: ${{ secrets.HOST }}
+            username: ${{ secrets.USERNAME }}
+            key: ${{ secrets.KEY }}
+            port: ${{ secrets.PORT }}
+            passphrase: ${{ secrets.PASSPHRASE }}
+            script: |
+              cd ~/LiXO-server
+              git checkout main
+              git pull
+              sudo docker build -t server .
+              sudo docker stop server
+              sudo docker run --name server --rm -d -p 5000:5000 server
+              sleep 10
+              python client_example.py
