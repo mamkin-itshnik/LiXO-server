@@ -97,10 +97,13 @@ def make_move():
             return {'error': 'bad move'}, 403
 
 
-if __name__ == '__main__':
+def main():
     start_matchmaker()
-    app.run(debug=DEBUG, host=HOST, port=PORT)
-
+    return app
+    
+if __name__ == '__main__':
+    _app = main()
+    _app.run(debug=DEBUG, host=HOST, port=PORT)
 # 400 Bad Request
 # 401 Unauthorized
 # 403 Forbidden
