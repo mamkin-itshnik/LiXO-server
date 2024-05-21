@@ -10,16 +10,19 @@ jobs:
       steps:
         - name: run dev server
           uses: appleboy/ssh-action@v1.0.3
+          env:
+            BRANCH: $GITHUB_REF_NAME         
           with:
             host: ${{ secrets.HOST }}
             username: ${{ secrets.USERNAME }}
             key: ${{ secrets.KEY }}
             port: ${{ secrets.PORT }}
             passphrase: ${{ secrets.PASSPHRASE }}
+            envs: BRANCH           
             script: |
               cd ~/LiXO-server
               git pull
-              git checkout main
+              git checkout $BRANCH
               sudo docker compose -f docker-compose.yml up -d --build
               sleep 10
               python client_example.py
