@@ -1,0 +1,10 @@
+services:
+  dev_server:
+    build: ./server/
+    container_name: dev_server
+    command: python server.py  # Flask server + DEBUG
+    ports:
+      - 5001:5000
+    env_file:
+      - ./server/.env
+    restart: always

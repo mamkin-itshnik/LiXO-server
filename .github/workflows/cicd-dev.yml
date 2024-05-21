@@ -1,36 +1,28 @@
-# сценарий для тестирования вашей версии кода сервера с помощью "client_example.py"
-name: "ci/cd pipeline"
-
+name: "Deployment dev server"
 on:
   push:
-    branches-ignore:
-      - main
-
+    branches: ["main"]
+  pull_request:
+    branches: [ "*" ]
 jobs:
-  update-repo:
+  run-dev-server:
       runs-on: ubuntu-latest
       steps:
         - name: run dev server
           uses: appleboy/ssh-action@v1.0.3
-# поменять порт и название контейнера
-# порт должен соответствовать "client_example.py" в вашей ветке. 5000 не занимать!
           env:
-            BRANCH: ci-cd
-            PORT: 4000
+            BRANCH: $GITHUB_REF_NAME         
           with:
             host: ${{ secrets.HOST }}
             username: ${{ secrets.USERNAME }}
             key: ${{ secrets.KEY }}
             port: ${{ secrets.PORT }}
             passphrase: ${{ secrets.PASSPHRASE }}
-            envs: BRANCH,PORT
+            envs: BRANCH           
             script: |
               cd ~/LiXO-server
               git pull
               git checkout $BRANCH
-              sudo docker build -t $BRANCH .
-              sudo docker run --name $BRANCH --rm -d -p $PORT:5000 $BRANCH 
+              sudo docker compose -f docker-compose.yml up -d --build
               sleep 10
               python client_example.py
-              sleep 15
-              sudo docker stop $BRANCH
