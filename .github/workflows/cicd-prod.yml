@@ -1,6 +1,9 @@
 name: "Deployment prod server"
 on:
-  workflow_dispatch:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: [ "*" ]
 jobs:
   run-server:
       runs-on: ubuntu-latest
@@ -15,10 +18,9 @@ jobs:
             passphrase: ${{ secrets.PASSPHRASE }}
             script: |
               cd ~/LiXO-server
-              git pull
               git checkout main
               git pull
-              sudo docker compose -f docker-compose-prod.yml up -d --build
+              sudo docker compose up -d --build
   test:
     needs: run-server
     runs-on: ubuntu-latest
@@ -29,7 +31,7 @@ jobs:
             client_example.py
           sparse-checkout-cone-mode: false
       - name: setup-python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           # Semantic version range syntax or exact version of a Python version
           python-version: '3.x'

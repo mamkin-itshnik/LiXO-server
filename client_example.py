@@ -2,7 +2,6 @@ import random
 import sys
 from pprint import pprint
 from time import sleep
-import sys
 import requests
 if len(sys.argv) < 3:
     HOST = '127.0.0.1'
@@ -90,7 +89,7 @@ if __name__ == '__main__':
     print('game begin')
     move_counter = 0
     while last := still_game(s, gid):
-        if move_counter > 5:
+        if move_counter > 20:
             print('too much moves')
             sys.exit(1)
         r = requests.get(SERVER + '/game?game_id=' + str(gid), headers={'X-Session': s}, proxies=PROXY)
