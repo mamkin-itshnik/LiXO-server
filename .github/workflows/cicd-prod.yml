@@ -36,4 +36,4 @@ jobs:
       - name: run test
         run: |
           pip install requests
-          python client_example.py ${{ secrets.HOST }}
+          python client_example.py ${{ secrets.HOST }} 57366
