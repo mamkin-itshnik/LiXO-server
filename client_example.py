@@ -17,7 +17,7 @@ PROXY = None
 
 
 def check_and_parse(req):
-    if req.status_code == 200:
+    if req.status_jcode == 200:
         return req.json()
     else:
         print(req.status_code)
