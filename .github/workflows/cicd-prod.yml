@@ -24,18 +24,31 @@ jobs:
   test:
     needs: run-server
     runs-on: ubuntu-latest
+    env:
+      SCHEMA: http
+      HOST: ${{ secrets.HOST }}
+      PORT: 57366
+      URL_PATH: /
+      GOOD_USER: user123
+      GOOD_PASSWORD: 123
     steps:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            client_example.py
+            tests
           sparse-checkout-cone-mode: false
       - name: setup-python
         uses: actions/setup-python@v5
         with:
           # Semantic version range syntax or exact version of a Python version
           python-version: '3.x'
-      - name: run test
+      - name: install requirements
         run: |
+          pip install python-dotenv
           pip install requests
-          python client_example.py ${{ secrets.HOST }} 57366
+      - name: run is_server_available
+        run: python tests/is_server_available.py
+      - name: run check_auth
+        run: python tests/check_auth.py
+      - name: run check_game
+        run: python tests/check_game.py
