@@ -18,4 +18,6 @@ def dumbbot(game: Game):
             ok = make_move(s, game.game_id, move)
             if ok:
                 sleep(1)
+        else:
+            sleep(1)
     print(game.winner, 'wins')
