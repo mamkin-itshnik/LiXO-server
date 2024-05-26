@@ -1,6 +1,6 @@
 # LiXO-server
 ![LiXo](https://github.com/mamkin-itshnik/LiXO-server/actions/workflows/cicd-prod.yml/badge.svg)
-![LiXo](https://github.com/mamkin-itshnik/LiXO-server/actions/workflows/cicd-dev.yml/badge.svg?branch=feature/Dockerizing-Flask)
+![LiXo](https://github.com/mamkin-itshnik/LiXO-server/actions/workflows/cicd-test.yml/badge.svg)
 ## API
 
 [Описание API](docs/api.md)
