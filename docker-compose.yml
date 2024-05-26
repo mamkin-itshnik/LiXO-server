@@ -1,10 +1,29 @@
 services:
-  dev_server:
+  prod_server:
     build: ./server/
-    container_name: dev_server
-    command: python server.py  # Flask server + DEBUG
-    ports:
-      - 5001:5000
+    container_name: prod_server
+    command: gunicorn --bind 0.0.0.0:5000 'server:main()' # WSGI server
+    expose:
+      - 5000
     env_file:
       - ./server/.env
     restart: always
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 57366:80
+#      - 443:443
+    restart: always
+#    volumes:
+#      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+#      - ./certbot/www/:/var/www/certbot/:ro
+    depends_on:
+      - prod_server
+
+#  certbot:
+#    image: certbot/certbot:latest
+#    volumes:
+#      - ./certbot/www/:/var/www/certbot/:rw
+#      - ./certbot/conf/:/etc/letsencrypt/:rw
+
